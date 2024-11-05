@@ -13,6 +13,37 @@ def create_user(email: str, password: str) -> None:
     connection.close()
 
 
+def is_user_exist(email: str) -> bool:
+    connection = sqlite3.connect('my_database.db')
+    cursor = connection.cursor()
+    query = '''
+        SELECT *
+        FROM Users
+        WHERE email=?;
+    '''
+    cursor.execute(query, (email,))    
+    response = cursor.fetchall()  
+    connection.commit()
+    connection.close()
+    return bool(response)
+
+
+def check_password(email: str, password: str) -> bool:
+    connection = sqlite3.connect('my_database.db')
+    cursor = connection.cursor()
+    query = '''
+        SELECT password
+        FROM Users
+        WHERE email=?;
+    '''
+    cursor.execute(query, (email,))    
+    password_from_db = cursor.fetchall()[0][0]
+  
+    connection.commit()
+    connection.close()
+    return password_from_db == password
+
+
 def create_table_users():
     connection = sqlite3.connect('my_database.db')
     cursor = connection.cursor()

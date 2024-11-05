@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text</title>    
+    <title>Text</title> 
+    <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+    <script src="{{url_for('static', filename='js/main.js')}}"> </script>   
 </head>
 <body>
-    <p>!!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+    <h1>Вход</h1>
+    <form method="POST">
+        <input type="email" name="email" value={{context.login}}>
+        <br><br>
+        <div class="password">
+            <input type="password" id="password-input" placeholder="Введите пароль" name="password" value={{context.password}}>
+            <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
+        </div>
+        <!-- <input type="password" name="password" value={{context.password}}>   -->
+        <br>
+        <input type="submit">
+    </form>
+    {{ context.output }}
+    <ul>
+        <a href="/registration">
+            <li>Регистрация</li>
+        </a>
+    </ul>
 </body>
 </html>

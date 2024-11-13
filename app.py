@@ -43,4 +43,11 @@ def registration():
             DB.create_user(login, password)
             context['output'] = 'Вы успешно зарегистрированы!'
     return render_template('registration.html', context=context)
+
+
+@app.route('/levels', methods=['GET', 'POST'])
+def levels():
+    context = {}
+        
+    return render_template('levels.html', context=context)
     

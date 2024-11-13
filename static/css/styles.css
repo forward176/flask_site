@@ -33,3 +33,33 @@ h1 {
 .password-control.view {
     background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
 }
+
+.lvl-button {
+    color:  black;
+    width: 60px;
+    height: 60px;
+    margin: 6px; 
+}
+.passed-lvl{
+    background-color: lightgreen;
+}
+
+.current-lvl{
+    background-color: rgb(230, 123, 102);
+}
+
+.blocked-lvl{
+    background-color: lightgrey;
+}
+
+.body-lvl {
+    background-image: url('https://s-cdn.sportbox.ru/images/styles/1920_1080/fp_fotos/3c/a3/0d53a9caf26273560a4db92f419146bf5d24a8858c4d7699409631.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+.container-levels {
+    display: flex;
+    justify-content: center;
+    
+}

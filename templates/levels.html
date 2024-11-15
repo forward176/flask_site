@@ -5,15 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Levels</title>    
     <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+    
 </head>
 <body class="body-lvl">
-    <div class="container-levels">
-        <button class="lvl-button passed-lvl"> Level 1 </button>
-        <button class="lvl-button passed-lvl"> Level 2 </button>
-        <button class="lvl-button current-lvl"> Level 3 </button>
-        <button class="lvl-button blocked-lvl"> Level 4 </button>
-        <button class="lvl-button blocked-lvl"> Level 5 </button>
-        <button class="lvl-button blocked-lvl"> Level 6 </button>
-    </div>
+    <div  id="container_levels">        
+    </div> 
+    <script>
+        let count_levels = {{context.count_levels}};
+        let passed_levels = {{context.passed_levels}};
+        const container_levels = document.getElementById('container_levels');
+        let content = '';
+        for (let i = 0; i < count_levels; i++) {
+            if (i == 0)
+                content += '<div class="container-levels">';  
+            else if (i % 5 == 0)                
+                content += '</div> <div class="container-levels">';            
+            if (i < passed_levels)
+                content += `<button class="lvl-button passed-lvl"> Level ${i + 1}  </button>`;   
+            else if (i == passed_levels)
+                content += `<button class="lvl-button current-lvl"> Level ${i + 1}  </button>`;                
+            else              
+                content += `<button class="lvl-button blocked-lvl"> Level ${i + 1}  </button>`;
+        }
+        content += "</div>";
+        container_levels.innerHTML += content;
+    </script>
 </body>
 </html>

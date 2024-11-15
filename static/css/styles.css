@@ -59,7 +59,7 @@ h1 {
   }
 
 .container-levels {
-    display: flex;
+     display: flex; 
     justify-content: center;
     
 }

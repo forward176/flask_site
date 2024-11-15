@@ -48,6 +48,9 @@ def registration():
 @app.route('/levels', methods=['GET', 'POST'])
 def levels():
     context = {}
-        
+    ###
+    context['count_levels'] = 12
+    context['passed_levels'] = 4
+    ###
     return render_template('levels.html', context=context)
     

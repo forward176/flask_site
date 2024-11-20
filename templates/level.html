@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lvl {{context.lvl}}</title>    
+    <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+</head>
+<body>
+    <div id="game">
+        <table id="game-table">
+        </table>
+        
+    </div>
+    <!--
+        w -- wall
+        s -- spikes
+        b -- стартовая точка
+        d -- door
+        c -- coin
+        0 -- ничего
+    -->
+    <script> 
+        
+        let gameObjects = {
+            w: `<img id="image4"  class="game-object" src="{{ url_for('static', filename='images/wall.jpg')}}">`,
+            s: `<img id="image3"  class="game-object" src="{{ url_for('static', filename='images/spikes.jpg')}}">`,
+            d: `<img id="image2"  class="game-object" src="{{ url_for('static', filename='images/door.jpg')}}">`,
+            c: `<img id="image1" class="game-object" src="{{ url_for('static', filename='images/coin.jpg')}}">`
+        };
+        let mat = [
+            'wwwww',
+            'w000w',
+            'w0c0w',
+            'wbsdw',
+            'wwwww'
+        ];
+        const gameTable = document.getElementById('game-table');
+        
+        let content = '';
+        for (let i = 0; i < mat.length; i++) {
+            content += "<tr>";
+            for (let j = 0; j < mat[i].length; j++){
+                if ('wcsd'.includes(mat[i][j]))
+                    content += `<td> ${gameObjects[mat[i][j]]} </td>`;
+                else
+                    content += "<td> </td>";
+            }
+            
+            content += "</tr>"; 
+        }
+        gameTable.innerHTML += content;
+    </script>
+        
+</body>
+</html>

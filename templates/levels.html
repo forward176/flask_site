@@ -20,10 +20,18 @@
                 content += '<div class="container-levels">';  
             else if (i % 5 == 0)                
                 content += '</div> <div class="container-levels">';            
-            if (i < passed_levels)
-                content += `<button class="lvl-button passed-lvl"> Level ${i + 1}  </button>`;   
+            if (i < passed_levels){
+                
+                content += `
+                    <a href="\level?lvl=${i + 1}">
+                        <button class="lvl-button passed-lvl"> Level ${i + 1}  </button>
+                    </a>`;
+            } 
             else if (i == passed_levels)
-                content += `<button class="lvl-button current-lvl"> Level ${i + 1}  </button>`;                
+                content += `
+                    <a href="\level?lvl=${i + 1}">
+                        <button class="lvl-button current-lvl"> Level ${i + 1}  </button>
+                    </a>`;                
             else              
                 content += `<button class="lvl-button blocked-lvl"> Level ${i + 1}  </button>`;
         }

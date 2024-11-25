@@ -55,14 +55,16 @@ def levels():
     return render_template('levels.html', context=context)
     
 
-@app.route('/level', methods=['GET', 'POST'])
+@app.route('/level')
 def level():
     context = {}
     if 'lvl' in request.args:
         context['lvl'] = request.args.get('lvl')
         # проверки на существование уровня и доступность
-        return render_template('level.html', context=context)
-    
+        path = f'levels/{context["lvl"]}.lvl'
+        mat = open(path, encoding="UTF-8").read().split()
+        context["mat"] = mat
+        return render_template('level.html', context=context)    
     else:
         return redirect(url_for('levels'), 301)
     

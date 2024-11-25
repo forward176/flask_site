@@ -10,8 +10,13 @@
     <div id="game">
         <table id="game-table">
         </table>
-        
     </div>
+
+    
+    <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero1.jpg')}}">
+    <!-- <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero2.jpg')}}">
+    <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero3.jpg')}}"> -->
+
     <!--
         w -- wall
         s -- spikes
@@ -24,17 +29,17 @@
         
         let gameObjects = {
             w: `<img id="image4"  class="game-object" src="{{ url_for('static', filename='images/wall.jpg')}}">`,
-            s: `<img id="image3"  class="game-object" src="{{ url_for('static', filename='images/spikes.jpg')}}">`,
-            d: `<img id="image2"  class="game-object" src="{{ url_for('static', filename='images/door.jpg')}}">`,
-            c: `<img id="image1" class="game-object" src="{{ url_for('static', filename='images/coin.jpg')}}">`
+            s: `<img id="image3"  class="game-object" src="{{ url_for('static', filename='images/spikes.png')}}">`,
+            d: `<img id="image2"  class="game-object" src="{{ url_for('static', filename='images/door.png')}}">`,
+            c: `<img id="image1" class="game-object" src="{{ url_for('static', filename='images/coin.png')}}">`
         };
-        let mat = [
-            'wwwww',
-            'w000w',
-            'w0c0w',
-            'wbsdw',
-            'wwwww'
+        let mat = [        
+            {% for row in context.mat %}
+                "{{ row }}", 
+            {% endfor %}
         ];
+        
+        
         const gameTable = document.getElementById('game-table');
         
         let content = '';
@@ -50,6 +55,32 @@
             content += "</tr>"; 
         }
         gameTable.innerHTML += content;
+        const hero = document.getElementById('hero');
+        let heroX = 100;
+        let heroY = 150;
+        hero.style.left = `${heroX}px`;
+        hero.style.top = `${heroY}px`;
+
+        speed = 15;
+
+        function move() {
+            heroX += speed;
+            if (heroX > 300){
+                console.log("Дошли до стенки");
+                speed = speed * -1;
+                hero.style.transform = `scaleX(-1)`;
+            }
+            else if( heroX < 0) {
+                console.log("Дошли");
+                speed = speed * -1; 
+                hero.style.transform = `scaleX(1)`;
+            }
+
+            else{
+                hero.style.left = `${heroX}px`;
+            };
+        }
+        let timerId = setInterval(move, 200);
     </script>
         
 </body>

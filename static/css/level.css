@@ -1,0 +1,33 @@
+body {
+    margin: 0px;
+}
+
+
+table {
+    border-collapse: collapse;
+  }
+
+
+td {
+    padding: 0px;
+}
+img {
+    float:left;
+}
+td {    
+    float:left;
+}
+
+tr {    
+    float:top;
+}
+.game-object{    
+    width: 50px;
+    height: 50px; 
+}
+
+#hero {
+    position: absolute;
+    top: 50px;
+    left: 150px;
+}

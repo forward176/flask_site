@@ -59,39 +59,7 @@ h1 {
   }
 
 .container-levels {
-     display: flex; 
+    display: flex; 
     justify-content: center;
     
-}
-#game {
-    border: 3px solid black;
-    height: 600px;
-    width: 1200px;
-}
-
-.game-object{    
-    width: 50px;
-    height: 50px; 
-}
-
-/* #image1 {
-    position: absolute;
-    left: 0px;
-    bottom:0px;
-    
-}
-
-#image2 {
-    position: absolute;
-    right: 0px;
-    top:0px;
-    width: 50px;
-    height: 50px; 
-}  */
-
-
-#hero {
-    position: absolute;
-    top: 50px;
-    left: 150px;
 }

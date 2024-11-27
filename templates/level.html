@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lvl {{context.lvl}}</title>    
-    <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+    <link type="text/css" href="{{ url_for('static', filename='css/level.css')}}" rel="stylesheet">
 </head>
 <body>
-    <div id="game">
-        <table id="game-table">
-        </table>
-    </div>
+    
+    <table id="game-table">
+    </table>
+    
 
     
     <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero1.jpg')}}">
@@ -24,14 +24,21 @@
         d -- door
         c -- coin
         0 -- ничего
+        p - platform
     -->
+
+
     <script> 
         
         let gameObjects = {
             w: `<img id="image4"  class="game-object" src="{{ url_for('static', filename='images/wall.jpg')}}">`,
             s: `<img id="image3"  class="game-object" src="{{ url_for('static', filename='images/spikes.png')}}">`,
             d: `<img id="image2"  class="game-object" src="{{ url_for('static', filename='images/door.png')}}">`,
-            c: `<img id="image1" class="game-object" src="{{ url_for('static', filename='images/coin.png')}}">`
+            c: `<img id="image1" class="game-object" src="{{ url_for('static', filename='images/coin.png')}}">`,
+            p: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/platform.png')}}">`,
+
+            b: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/kvadrat.jpg')}}">`,
+            0: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/kvadrat.jpg')}}">`
         };
         let mat = [        
             {% for row in context.mat %}
@@ -46,10 +53,10 @@
         for (let i = 0; i < mat.length; i++) {
             content += "<tr>";
             for (let j = 0; j < mat[i].length; j++){
-                if ('wcsd'.includes(mat[i][j]))
+                /*if ('wcsdp'.includes(mat[i][j]))*/
                     content += `<td> ${gameObjects[mat[i][j]]} </td>`;
-                else
-                    content += "<td> </td>";
+                /*else
+                    content += "<td> </td>";*/
             }
             
             content += "</tr>"; 
@@ -61,25 +68,49 @@
         hero.style.left = `${heroX}px`;
         hero.style.top = `${heroY}px`;
 
-        speed = 15;
-
+        speedX = 15;
+        speedY = 0;
+        side = 50;
+        function checkCollision(){
+            /* heroX heroY mat[][]*/
+            let posUpSide = parseInt(heroY / side);            
+            let posDownSide = posUpSide + 1;
+            let posLeftSide = parseInt(heroX / side);
+            let posRightSide = posLeftSide + 1;
+            if (mat[posDownSide][posLeftSide] == 'w' || mat[posDownSide][posRightSide] == 'w'){
+                heroY = posUpSide * side;
+                speedY = 0;
+            }
+        }
         function move() {
-            heroX += speed;
-            if (heroX > 300){
+            heroX += speedX;
+            heroY += speedY; 
+            speedY += 5;
+            checkCollision();
+            if (heroX > 850){
                 console.log("Дошли до стенки");
-                speed = speed * -1;
+                speedX = speedX * -1;
                 hero.style.transform = `scaleX(-1)`;
             }
             else if( heroX < 0) {
                 console.log("Дошли");
-                speed = speed * -1; 
+                speedX = speedX * -1; 
                 hero.style.transform = `scaleX(1)`;
             }
 
             else{
                 hero.style.left = `${heroX}px`;
+                hero.style.top = `${heroY}px`;
             };
         }
+        function jump(event) {
+            if (event.keyCode == '32') {
+                console.log('Прыжок!');
+                speedY = -50
+            }
+        }
+        document.addEventListener('keydown', jump);
+        
         let timerId = setInterval(move, 200);
     </script>
         

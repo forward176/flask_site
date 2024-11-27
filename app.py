@@ -49,7 +49,7 @@ def registration():
 def levels():
     context = {}
     ###
-    context['count_levels'] = 12
+    context['count_levels'] = 10
     context['passed_levels'] = 4
     ###
     return render_template('levels.html', context=context)

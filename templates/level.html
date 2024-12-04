@@ -13,7 +13,7 @@
     
 
     
-    <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero1.jpg')}}">
+    <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero1.png')}}">
     <!-- <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero2.jpg')}}">
     <img id="hero" class="game-object" src="{{ url_for('static', filename='images/hero3.jpg')}}"> -->
 
@@ -37,8 +37,8 @@
             c: `<img id="image1" class="game-object" src="{{ url_for('static', filename='images/coin.png')}}">`,
             p: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/platform.png')}}">`,
 
-            b: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/kvadrat.jpg')}}">`,
-            0: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/kvadrat.jpg')}}">`
+            b: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/kvadrat.png')}}">`,
+            0: `<img id="image5" class="game-object" src="{{ url_for('static', filename='images/kvadrat.png')}}">`
         };
         let mat = [        
             {% for row in context.mat %}
@@ -49,22 +49,31 @@
         
         const gameTable = document.getElementById('game-table');
         
+        let countCoin = 0;
         let content = '';
+        let heroX = 0;
+        let heroY = 0;
+        let jumpState = false;
         for (let i = 0; i < mat.length; i++) {
             content += "<tr>";
             for (let j = 0; j < mat[i].length; j++){
-                /*if ('wcsdp'.includes(mat[i][j]))*/
-                    content += `<td> ${gameObjects[mat[i][j]]} </td>`;
-                /*else
-                    content += "<td> </td>";*/
+                content += `<td id='${i}_${j}'> ${gameObjects[mat[i][j]]} </td>`;
+                if ( mat[i][j] == 'b'){
+                    heroX = j * 50;
+                    heroY = i * 50;
+                }
+                else if ( mat[i][j] == 'c'){
+                    countCoin++;   //  countCoin += 1;
+                }
             }
             
             content += "</tr>"; 
-        }
+        } 
+
+        console.log('countCoin: ', countCoin);
         gameTable.innerHTML += content;
         const hero = document.getElementById('hero');
-        let heroX = 100;
-        let heroY = 150;
+
         hero.style.left = `${heroX}px`;
         hero.style.top = `${heroY}px`;
 
@@ -77,36 +86,71 @@
             let posDownSide = posUpSide + 1;
             let posLeftSide = parseInt(heroX / side);
             let posRightSide = posLeftSide + 1;
-            if (mat[posDownSide][posLeftSide] == 'w' || mat[posDownSide][posRightSide] == 'w'){
+            /// сбор монеток
+            if(mat[posUpSide][posLeftSide] == 'c'){ 
+                document.getElementById(`${posUpSide}_${posLeftSide}`).innerHTML = gameObjects[0];
+                countCoin--; 
+                mat[posUpSide][posLeftSide] = '0';
+                console.log('countCoin: ', countCoin);
+            }
+            
+            
+            if(mat[posUpSide][posRightSide] == 'c'){ 
+                document.getElementById(`${posUpSide}_${posRightSide}`).innerHTML = gameObjects[0];
+                countCoin--; 
+                mat[posUpSide][posRightSide] = '0';
+                console.log('countCoin: ', countCoin);
+            }
+            // конец сбора монеток
+            if (speedY < 0 && mat[posUpSide][posLeftSide] == 'w' && mat[posUpSide][posRightSide] == 'w' ){
+                speedY = 5;
+                heroY += 6;
+            }
+            else if (mat[posUpSide][posLeftSide] == 'w' || mat[posUpSide][posRightSide] == 'w'){
+                speedX = speedX * -1;  
+                if (speedY < 0){
+                    speedY = -50;
+                }
+                              
+            }
+            else if (mat[posDownSide][posLeftSide] == 'w' || mat[posDownSide][posRightSide] == 'w'){
                 heroY = posUpSide * side;
                 speedY = 0;
+                jumpState = false;
             }
+            
         }
+
+        function sign(x) {
+            if (x > 0)
+                return 1;
+            else if (x == 0) 
+                return 0; 
+            else
+                return -1; 
+        }
+
         function move() {
             heroX += speedX;
             heroY += speedY; 
             speedY += 5;
-            checkCollision();
-            if (heroX > 850){
-                console.log("Дошли до стенки");
-                speedX = speedX * -1;
-                hero.style.transform = `scaleX(-1)`;
-            }
-            else if( heroX < 0) {
-                console.log("Дошли");
-                speedX = speedX * -1; 
-                hero.style.transform = `scaleX(1)`;
-            }
 
-            else{
+            checkCollision();
+            //if (heroX > 900 ||  heroX < 50){
+                //speedX = speedX * -1;
+                hero.style.transform = `scaleX(${sign(speedX)})`;
+            //}//
+
+           // else{
                 hero.style.left = `${heroX}px`;
                 hero.style.top = `${heroY}px`;
-            };
+            //};
         }
         function jump(event) {
-            if (event.keyCode == '32') {
-                console.log('Прыжок!');
-                speedY = -50
+            if (event.keyCode == '32' && (speedY == 0 || speedY == 5) && jumpState == false) {
+                console.log('Прыжок!!!');
+                speedY = -50;
+                jumpState = true;
             }
         }
         document.addEventListener('keydown', jump);

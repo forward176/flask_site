@@ -28,8 +28,7 @@
     -->
 
 
-    <script> 
-        
+    <script>        
         let gameObjects = {
             w: `<img id="image4"  class="game-object" src="{{ url_for('static', filename='images/wall.jpg')}}">`,
             s: `<img id="image3"  class="game-object" src="{{ url_for('static', filename='images/spikes.png')}}">`,
@@ -42,7 +41,7 @@
         };
         let mat = [        
             {% for row in context.mat %}
-                "{{ row }}", 
+                "{{ row }}".split(''), 
             {% endfor %}
         ];
         
@@ -57,13 +56,21 @@
         for (let i = 0; i < mat.length; i++) {
             content += "<tr>";
             for (let j = 0; j < mat[i].length; j++){
-                content += `<td id='${i}_${j}'> ${gameObjects[mat[i][j]]} </td>`;
                 if ( mat[i][j] == 'b'){
                     heroX = j * 50;
                     heroY = i * 50;
                 }
+                else if ( mat[i][j] == 'd'){
+                    doorI = i;
+                    doorJ = j;
+                    mat[i][j] = '0';
+                }
                 else if ( mat[i][j] == 'c'){
                     countCoin++;   //  countCoin += 1;
+                }
+                content += `<td id='${i}_${j}'> ${gameObjects[mat[i][j]]} </td>`;
+                if ( mat[i][j] == 'p'){
+                    mat[i][j] = 'w';
                 }
             }
             
@@ -80,12 +87,54 @@
         speedX = 15;
         speedY = 0;
         side = 50;
+        isGameOn = true;
         function checkCollision(){
             /* heroX heroY mat[][]*/
             let posUpSide = parseInt(heroY / side);            
             let posDownSide = posUpSide + 1;
             let posLeftSide = parseInt(heroX / side);
             let posRightSide = posLeftSide + 1;
+
+            //Проверка если мы в двери
+            let checkDoor = (
+                mat[posUpSide][posLeftSide] == 'd' || 
+                mat[posDownSide][posLeftSide] == 'd' || 
+                mat[posUpSide][posRightSide] == 'd' ||
+                mat[posDownSide][posRightSide] == 'd' 
+            );
+
+            if(checkDoor && isGameOn){ 
+                isGameOn = false;
+                
+                /*speedX = 0;
+                speedY = 0;
+                setTimeout((function() { location.reload(); }), 5000);  */
+                hero.style.left = `${doorJ * side}px`; // не работает перенос на дверь!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                hero.style.top = `${doorI * side}px`;
+                alert('Вы выйграли!'); 
+                
+                location.reload();            
+            }
+
+
+
+
+            //Обновление страницы js при нажатии на пики
+            let uslovie = (
+                mat[posUpSide][posLeftSide] == 's' || 
+                mat[posDownSide][posLeftSide] == 's' || 
+                mat[posUpSide][posRightSide] == 's' ||
+                mat[posDownSide][posRightSide] == 's' 
+            );
+
+            if(uslovie && isGameOn){ 
+                isGameOn = false;
+                /*speedX = 0;
+                speedY = 0;
+                setTimeout((function() { location.reload(); }), 5000);  */
+                alert('Вы проиграли!'); 
+                location.reload();            
+            }
             /// сбор монеток
             if(mat[posUpSide][posLeftSide] == 'c'){ 
                 document.getElementById(`${posUpSide}_${posLeftSide}`).innerHTML = gameObjects[0];
@@ -101,13 +150,27 @@
                 mat[posUpSide][posRightSide] = '0';
                 console.log('countCoin: ', countCoin);
             }
+
+            // Проверка кол-ва монет
+            if (countCoin == 0){
+                document.getElementById(`${doorI}_${doorJ}`).innerHTML = gameObjects['d'];
+                mat[doorI][doorJ] = 'd';
+            }
+
             // конец сбора монеток
             if (speedY < 0 && mat[posUpSide][posLeftSide] == 'w' && mat[posUpSide][posRightSide] == 'w' ){
                 speedY = 5;
-                heroY += 6;
+                heroY = posDownSide * side;
             }
             else if (mat[posUpSide][posLeftSide] == 'w' || mat[posUpSide][posRightSide] == 'w'){
+                if (speedX > 0){
+                    heroX = posLeftSide * side;
+                }
+                else{
+                    heroX = posRightSide * side;
+                }
                 speedX = speedX * -1;  
+
                 if (speedY < 0){
                     speedY = -50;
                 }

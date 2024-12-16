@@ -35,3 +35,12 @@ tr {
 body {
     background-color: green;
 }
+
+.window {
+    border: 3px solid rgb(18, 12, 7);
+    width: 150px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    visibility: hidden;
+}

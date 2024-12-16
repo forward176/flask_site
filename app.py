@@ -68,3 +68,11 @@ def level():
     else:
         return redirect(url_for('levels'), 301)
     
+
+
+
+@app.route('/question', methods=['GET', 'POST'])
+def question():
+    context = {}
+
+    return render_template('question.html', context=context)

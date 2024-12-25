@@ -74,13 +74,20 @@ def level():
 @app.route('/question', methods=['GET', 'POST'])
 def question():
     context = {}
-    with open('questions.txt','r',encoding='UTF-8') as file:
-        sp = []
-        lines = file.readlines()
-        print(len(lines))
-        for i in range(0, len(lines) - 1, 2):
-            quest = lines[i].strip()
-            ans = lines[i + 1].strip()
-            sp.append((quest, ans))
-    print(*sp, sep='\n')
+    if 'lvl' in request.args:
+        context['lvl'] = int(request.args.get('lvl'))
+        with open('questions.txt','r',encoding='UTF-8') as file:
+            sp = []
+            lines = file.readlines()
+            # print(len(lines))
+            for i in range(0, len(lines) - 1, 2):
+                quest = lines[i].strip()
+                ans = lines[i + 1].strip()
+                sp.append((quest, ans))
+        # print(*sp, sep='\n')
+        context['question'] = sp[context['lvl']][0]
+        context['answer'] = sp[context['lvl']][1]
+    else:
+        return redirect(url_for('levels'), 301)
+    print(context)
     return render_template('question.html', context=context)

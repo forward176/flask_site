@@ -1,63 +1,23 @@
-import sqlite3
+import supabase
+from our_secrets import url, key
 
 
 def create_user(email: str, password: str) -> None:
-    connection = sqlite3.connect('my_database.db')
-    cursor = connection.cursor()
-    query = '''
-        INSERT INTO Users
-        VALUES (?, ?);
-    '''
-    cursor.execute(query, (email, password))    
-    connection.commit()
-    connection.close()
+    db = supabase.create_client(url, key)
+    response = (
+        db.table("users")
+        .insert({ "email": email, "password": password})
+        .execute()
+    )
 
 
-def is_user_exist(email: str) -> bool:
-    connection = sqlite3.connect('my_database.db')
-    cursor = connection.cursor()
-    query = '''
-        SELECT *
-        FROM Users
-        WHERE email=?;
-    '''
-    cursor.execute(query, (email,))    
-    response = cursor.fetchall()  
-    connection.commit()
-    connection.close()
-    return bool(response)
+def is_user_exist(email: str):
+    db = supabase.create_client(url, key)
+    response = db.table("users").select("*").eq('email', email).execute()    
+    return bool(response.data)
 
 
 def check_password(email: str, password: str) -> bool:
-    connection = sqlite3.connect('my_database.db')
-    cursor = connection.cursor()
-    query = '''
-        SELECT password
-        FROM Users
-        WHERE email=?;
-    '''
-    cursor.execute(query, (email,))    
-    password_from_db = cursor.fetchall()[0][0]
-  
-    connection.commit()
-    connection.close()
-    return password_from_db == password
-
-
-def create_table_users():
-    connection = sqlite3.connect('my_database.db')
-    cursor = connection.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Users (
-            email TEXT PRIMARY KEY,
-            password TEXT
-        );
-    ''')
-    connection.commit()
-    connection.close()
-
-
-if __name__ == '__main__':
-    create_table_users()
-    # create_user("tujh.222@mail.ru", 'ewrwe5')
-
+    db = supabase.create_client(url, key)
+    response = db.table("users").select("password").eq('email', email).execute()  
+    return response.data[0]['password'] == password

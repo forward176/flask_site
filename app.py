@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request
 import DB
-from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+import json
 
 
+COUNT_GAME_LVLS = 20
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(20).hex()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -21,8 +24,8 @@ def index():
             context['output'] = 'Неверный пароль!'
         else: 
             context['output'] = 'Успешный вход!'
-            
-            
+            session['login'] = login
+            return redirect(url_for('levels'), 301)  
     return render_template('index.html', context=context)
     
 
@@ -47,32 +50,55 @@ def registration():
 
 @app.route('/levels', methods=['GET', 'POST'])
 def levels():
+    if 'login' not in session: 
+        return index()  #  TODO СДЕЛАТЬ НОРМАЛЬНЫЙ РЕДИРЕКТ НА ГЛАВНУЮ
     context = {}
-    ###
-    context['count_levels'] = 10
-    context['passed_levels'] = 4
-    ###
+    context['count_levels'] = COUNT_GAME_LVLS
+    context['passed_levels'] = DB.get_count_level(session['login'])
     return render_template('levels.html', context=context)
+
+
+@app.route('/level', methods=['GET', 'POST'])
+def level():
+    if 'login' not in session: 
+        return index()  #  TODO СДЕЛАТЬ НОРМАЛЬНЫЙ РЕДИРЕКТ НА ГЛАВНУЮ
     
 
-@app.route('/level')
-def level():
+
+    if request.method == 'POST':  ## TODO СЮДА НЕ ПОПАЛИ
+        print('!!!!!!!!!!!!!!!!!!')
+        try:
+            data = request.json
+            if 'update_count_level' in data:
+                DB.update_count_level(session['login'])                            
+                return jsonify({'message': 'Success!'}), 200
+            else:
+                raise KeyError('Value key not found')
+        except (KeyError, json.JSONDecodeError) as e:
+            return jsonify({'error': 'Invalid data format'}), 400  
+
+
+
     context = {}
     if 'lvl' in request.args:
-        context['lvl'] = request.args.get('lvl')
-        # проверки на существование уровня и доступность
-        path = f'levels/{context["lvl"]}.lvl'
+        requested_lvl = int(request.args.get('lvl'))
+        max_available_lvl = DB.get_count_level(session['login']) + 1
+        if requested_lvl > max_available_lvl or requested_lvl > COUNT_GAME_LVLS or requested_lvl % 2 == 0:
+            return redirect(url_for('levels'), 301)
+        context['lvl'] = requested_lvl
+        path = f'levels/{(context["lvl"] + 1) // 2}.lvl'
         mat = open(path, encoding="UTF-8").read().split()
         context["mat"] = mat
+        context["is_max_available_lvl"] = requested_lvl == max_available_lvl
         return render_template('level.html', context=context)    
     else:
         return redirect(url_for('levels'), 301)
-    
-
 
 
 @app.route('/question', methods=['GET', 'POST'])
 def question():
+    if 'login' not in session: 
+        return index()  #  TODO СДЕЛАТЬ НОРМАЛЬНЫЙ РЕДИРЕКТ НА ГЛАВНУЮ
     context = {}
     if 'lvl' in request.args:
         context['lvl'] = int(request.args.get('lvl'))

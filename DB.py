@@ -21,3 +21,17 @@ def check_password(email: str, password: str) -> bool:
     db = supabase.create_client(url, key)
     response = db.table("users").select("password").eq('email', email).execute()  
     return response.data[0]['password'] == password
+
+
+def get_count_level(email: str) -> int :
+    db = supabase.create_client(url, key)
+    response = db.table("users").select("countLevel").eq('email', email).execute() 
+    return response.data[0]['countLevel']
+
+
+def update_count_level(email: str) -> None:
+    db = supabase.create_client(url, key)
+    response = db.table("users").update({"countLevel": get_count_level(email) + 1}).eq('email', email).execute()
+
+
+# TODO при числе 4 в БД не открывается Level 3

@@ -15,25 +15,49 @@
         let passed_levels = {{context.passed_levels}};
         const container_levels = document.getElementById('container_levels');
         let content = '';
-        for (let i = 0; i < count_levels; i++) {
+        for (let i = 0; i < count_levels / 2; i++) {
             if (i == 0)
                 content += '<div class="container-levels">';  
             else if (i % 5 == 0)                
-                content += '</div> <div class="container-levels">';            
-            if (i < passed_levels){
-                
+                content += '</div> <div class="container-levels">';             
+            if (i < parseInt(passed_levels / 2))               
                 content += `
-                    <a href="\level?lvl=${i + 1}">
+                <div>
+                    <a href="\level?lvl=${2 * i + 1}">
                         <button class="lvl-button passed-lvl"> Level ${i + 1}  </button>
-                    </a>`;
-            } 
-            else if (i == passed_levels)
+                    </a>
+                    <br>
+                    <a href="\question?lvl=${2 * i + 2}">
+                        <button class="lvl-button passed-lvl"> Question ${i + 1}  </button>
+                    </a>
+                </div>`;            
+            else if (i ==  parseInt(passed_levels / 2) && passed_levels % 2 == 0)
                 content += `
-                    <a href="\level?lvl=${i + 1}">
+                <div>
+                    <a href="\level?lvl=${2 * i + 1}">
                         <button class="lvl-button current-lvl"> Level ${i + 1}  </button>
-                    </a>`;                
+                    </a>
+                    <br>
+                    <button class="lvl-button blocked-lvl"> Question ${i + 1}  </button>
+                </div>`; 
+            else if ((i == parseInt(passed_levels / 2)) && (passed_levels % 2 == 1))
+                content += `
+                <div>
+                    <a href="\level?lvl=${2 * i + 1}">
+                        <button class="lvl-button passed-lvl"> Level ${i + 1}  </button>
+                    </a>
+                    <br>
+                    <a href="\question?lvl=${2 * i + 2}">
+                    <button class="lvl-button current-lvl"> Question ${i + 1}  </button> 
+                    </a>                   
+                </div>`;             
             else              
-                content += `<button class="lvl-button blocked-lvl"> Level ${i + 1}  </button>`;
+                content += `
+                <div><button class="lvl-button blocked-lvl"> Level ${i + 1}  </button>
+                <br>
+                <button class="lvl-button blocked-lvl"> Question ${i + 1}  </button>
+                </div>`;
+            
         }
         content += "</div>";
         container_levels.innerHTML += content;

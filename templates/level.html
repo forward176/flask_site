@@ -29,7 +29,7 @@
 
     <div id="winWindow" class="window">
         <p>Вы победили!</p>
-        <a href="\question?lvl={{context.lvl|int()}}">
+        <a href="\question?lvl={{context.lvl|int() + 1}}">
             <button id="nextLevel">Закончить уровень</button>
         </a>
 
@@ -120,9 +120,18 @@
                 mat[posDownSide][posRightSide] == 'd' 
             );
 
-            if(checkDoor && isGameOn){ 
+            if(checkDoor && isGameOn){  //  уровень пройден
+                if ('{{context.is_max_available_lvl}}' == 'True'){
+                    data_dict = {
+                        'update_count_level': true
+                    }
+                    fetch('/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data_dict)
+                    });
+                }
                 isGameOn = false;
-                
                 speedX = 0;
                 speedY = 0; 
                 hero.style.left = `${doorJ * side}px`; // не работает перенос на дверь!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

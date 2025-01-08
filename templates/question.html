@@ -19,8 +19,8 @@
 
 <script>
 function check_answer(){
-    user_answer = document.getElementById('answer').value;
-    correct_answer = '{{context.answer}}';
+    user_answer = document.getElementById('answer').value.trim().toLowerCase();
+    correct_answer = '{{context.answer}}'.toLowerCase();
     console.log(user_answer, correct_answer); 
     if (correct_answer == user_answer){
         document.getElementById('button_nextLevel').style.visibility='visible';

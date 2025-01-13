@@ -125,12 +125,12 @@
                     data_dict = {
                         'update_count_level': true
                     }
-                    fetch('/', {
+                    fetch('/level', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(data_dict)
                     });
-                }
+                } 
                 isGameOn = false;
                 speedX = 0;
                 speedY = 0; 

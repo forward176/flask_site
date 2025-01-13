@@ -14,7 +14,7 @@
     <button id="check_answer" onclick="check_answer()">Проверить ответ</button>
     <p id="message"></p>
     <a style='visibility: hidden;' id="button_nextLevel" href="\level?lvl={{context.lvl|int() + 1}}">
-        <button  id="nextLevel">Следующий уровень {{context.lvl|int() + 1}}</button>
+        <button  id="nextLevel">Следующий уровень {{context.lvl|int() // 2 + 1}}</button>
     </a>
 
 <script>
@@ -23,6 +23,17 @@ function check_answer(){
     correct_answer = '{{context.answer}}'.toLowerCase();
     console.log(user_answer, correct_answer); 
     if (correct_answer == user_answer){
+        // TODO СКРЫТЬ КНОПКУ ПРОВЕРКИ ТУТ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if ('{{context.is_max_available_lvl}}' == 'True'){
+            data_dict = {
+                'update_count_level': true
+            }
+            fetch('/level', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data_dict)
+            });
+        }
         document.getElementById('button_nextLevel').style.visibility='visible';
         document.getElementById('message').innerHTML="Ответ правильный";
     }

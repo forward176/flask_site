@@ -23,7 +23,7 @@ function check_answer(){
     correct_answer = '{{context.answer}}'.toLowerCase();
     console.log(user_answer, correct_answer); 
     if (correct_answer == user_answer){
-        // TODO СКРЫТЬ КНОПКУ ПРОВЕРКИ ТУТ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        document.getElementById('check_answer').style.visibility = 'hidden';
         if ('{{context.is_max_available_lvl}}' == 'True'){
             data_dict = {
                 'update_count_level': true

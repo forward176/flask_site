@@ -32,6 +32,3 @@ def get_count_level(email: str) -> int :
 def update_count_level(email: str) -> None:
     db = supabase.create_client(url, key)
     response = db.table("users").update({"countLevel": get_count_level(email) + 1}).eq('email', email).execute()
-
-
-# TODO при числе 4 в БД не открывается Level 3

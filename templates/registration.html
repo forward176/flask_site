@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>    
-    <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+    <title>Регистрация</title>
+    <link type="text/css" href="{{ url_for('static', filename='css/registration_login.css')}}" rel="stylesheet">
 </head>
 <body>
-    <h1>Регистрация</h1>
-    <form method="POST">
-        <input type="email" name="email"><br><br>
-        <input type="password" name="password"><br><br>
-        <button  type="submit">Проверить ответ.</button>
+    <form class="registration-form"  method="POST">
+        <h1>Регистрация</h1>
+        <label for="email">Почта</label>
+        <input type="email" id="email" name="email" placeholder="Введите вашу почту" required>
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" placeholder="Введите ваш пароль" required>
+        <button type="submit">Зарегистрироваться</button>
+        {{ context.output }}
+        <p>Уже есть аккаунт? <a href="/">Войти</a></p>
     </form>
-    {{ context.output }}
-    <ul>
-        <a href="/">
-            <li>Вход</li>
-        </a>
-    </ul>
 </body>
-</html>
+</html>  
+

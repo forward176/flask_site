@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lvl {{context.lvl}}</title>    
     <link type="text/css" href="{{ url_for('static', filename='css/level.css')}}" rel="stylesheet">
+
+
+
+
 </head>
 <body>
     
@@ -26,24 +30,32 @@
         0 -- ничего
         p - platform
     -->
+    <div class="modal" id='modal'>
+        <div id="winWindow" class="window">
+            <p>Вы победили!</p>
+            <a href="\question?lvl={{context.lvl|int() + 1}}">
+                <button id="nextLevel">Закончить уровень</button>
+            </a>
 
-    <div id="winWindow" class="window">
-        <p>Вы победили!</p>
-        <a href="\question?lvl={{context.lvl|int() + 1}}">
-            <button id="nextLevel">Закончить уровень</button>
-        </a>
+            <a href= "\level">
+                <button id="listLevel"> Список уровней</button>
+            </a>        
+        </div>
 
-        <a href= "\level">
-            <button id="listLevel"> Список уровней</button>
-        </a>        
+        <div id="loseWindow" class="window">
+            <p>Вы проиграли!</p>
+            <a href="\level?lvl={{context.lvl}}">
+                <button id="nextLevel">Начать заново</button>
+            </a>  
+        </div>
     </div>
 
-    <div id="loseWindow" class="window">
-        <p>Вы проиграли!</p>
-        <a href="\level?lvl={{context.lvl}}">
-            <button id="nextLevel">Начать заново</button>
-        </a>  
-    </div>
+
+
+
+
+
+
 
     <script>        
         let gameObjects = {
@@ -137,6 +149,8 @@
                 hero.style.left = `${doorJ * side}px`; // не работает перенос на дверь!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 hero.style.top = `${doorI * side}px`;
                 document.getElementById('winWindow').style.visibility = 'visible';
+                // document.getElementById('modal').style.backdrop_filter = 'blur(5px)'; 
+                document.querySelector('.modal').classList.toggle('blur');
                 /*document.body.style.filter = 'blur(4px)';
                 document.getElementById('winWindow').content.style.removeProperty('filter'); */
         

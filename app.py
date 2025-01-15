@@ -11,6 +11,8 @@ app.config['SECRET_KEY'] = os.urandom(20).hex()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if 'login' in session:
+        return redirect(url_for('levels'), 301)  
     context = {}
     context['output'] = ''
     if request.method == 'POST':
@@ -23,15 +25,16 @@ def index():
         elif not DB.check_password(login, password):
             context['output'] = 'Неверный пароль!'
         else: 
-            context['output'] = 'Успешный вход!'
+            # context['output'] = 'Успешный вход!'
             session['login'] = login
             return redirect(url_for('levels'), 301)  
     return render_template('index.html', context=context)
     
 
-
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
+    if 'login' in session:
+        return redirect(url_for('levels'), 301)  
     context = {}
     if request.method == 'POST':
         login = request.form.get('email')
@@ -44,7 +47,9 @@ def registration():
             context['output'] = 'Такой пользователь уже существует!'
         else:
             DB.create_user(login, password)
-            context['output'] = 'Вы успешно зарегистрированы!'
+            # context['output'] = 'Вы успешно зарегистрированы!'
+            session['login'] = login
+            return redirect(url_for('levels'), 301)  
     return render_template('registration.html', context=context)
 
 
@@ -123,3 +128,4 @@ def question():
     context['lvl'] = requested_lvl
     context["is_max_available_lvl"] = requested_lvl == max_available_lvl   
     return render_template('question.html', context=context)
+

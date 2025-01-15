@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style> 
+        .main {
+            padding: 100px 150px;
+            height: calc(100vh - 160px);
+        }
+
+        .footer {
+            background-color: #333;
+            height: 80px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blur {
+            backdrop-filter: blur(5px);
+        }
+
+        .modal__inner {
+        max-width: 300px;
+        max-height: 300px;
+        width: 100%;
+        height: 100%;
+        background-color: pink;
+        padding: 40px;
+        }
+    </style>
+
+</head>
+<body>
+    <header class="header"></header>
+
+    <main class="main">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, magni aliquid eligendi quibusdam delectus iure nesciunt cupiditate, fugit ratione distinctio, rerum enim. Cumque recusandae dolores fugiat, totam deleniti eligendi et quas quasi necessitatibus
+            placeat dolore doloremque ad cupiditate harum minima illum maxime veniam iste quam nesciunt fuga tempore. Dolores minus sequi iure neque velit adipisci ipsum rem quibusdam quia esse inventore nisi fugit voluptatibus repudiandae id, quos error laboriosam
+            molestiae. Optio magnam distinctio at error tempore quos rem labore nobis cum in aspernatur corrupti ad, veritatis tempora provident ullam commodi excepturi ea accusamus dicta. Architecto aperiam necessitatibus ullam tempora omnis.</p>
+    </main>
+
+    <footer class="footer"></footer>
+
+    <div class="modal">
+        <div class="modal__inner">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dicta, corrupti!
+            <button id="button">click</button>
+        </div>
+    </div>
+    <script>
+        button.addEventListener('click', function() {
+            document.querySelector('.modal').classList.toggle('blur');
+        });
+    </script>
+</body>
+</html>

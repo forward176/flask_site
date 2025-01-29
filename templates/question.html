@@ -4,45 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Question</title> 
-    <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+    <link type="text/css" href="{{ url_for('static', filename='css/question.css')}}" rel="stylesheet">
 </head>
 <body>
     <p>{{context.question}}</p>
- 
-    <input type="text" id="answer">
-    <br><br>
-    <button id="check_answer" onclick="check_answer()">Проверить ответ</button>
-    <p id="message"></p>
+    <div>
+        <input type="text" id="answer">
+        <span id="message"></span>
+    </div>
+    <p>Доступно монет: <span id="count_coin"> {{context.count_coin}}</span> </p>
+    
+    <div id='control_buttons'>
+        <button id="check_answer" onclick="check_answer()">Проверить ответ</button>
+        <button id="buy_answer" onclick="buy_answer()">Купить ответ (5 монет)</button>
+    </div>
     <a style='visibility: hidden;' id="button_nextLevel" href="\level?lvl={{context.lvl|int() + 1}}">
         <button  id="nextLevel">Следующий уровень {{context.lvl|int() // 2 + 1}}</button>
     </a>
 
-<script>
-function check_answer(){
-    user_answer = document.getElementById('answer').value.trim().toLowerCase();
-    correct_answer = '{{context.answer}}'.toLowerCase();
-    console.log(user_answer, correct_answer); 
-    if (correct_answer == user_answer){
-        document.getElementById('check_answer').style.visibility = 'hidden';
-        if ('{{context.is_max_available_lvl}}' == 'True'){
-            data_dict = {
-                'update_count_level': true
-            }
-            fetch('/level', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data_dict)
-            });
+    <script>
+        let available_coins = {{context.count_coin}};
+        let is_max_available_lvl = '{{context.is_max_available_lvl}}' == 'True';
+        function modifyControl(){
+            document.getElementById("control_buttons").remove(); 
+            document.getElementById('button_nextLevel').style.visibility = 'visible';
+            document.getElementById('message').innerHTML = "Ответ правильный";
         }
-        document.getElementById('button_nextLevel').style.visibility='visible';
-        document.getElementById('message').innerHTML="Ответ правильный";
-    }
-    else {
-        document.getElementById('message').innerHTML="Ответ неправильный";
-    }
+
+        function check_answer(){
+            user_answer = document.getElementById('answer').value.trim().toLowerCase();
+            correct_answer = '{{context.answer}}'.toLowerCase();       
+            if (correct_answer == user_answer){
+                modifyControl()
+                if (is_max_available_lvl) {
+                    data_dict = {
+                        'update_count_level': true
+                    }
+                    fetch('/question', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(data_dict)
+                    });
+                }
+            }
+            else {
+                document.getElementById('message').innerHTML="Ответ неправильный";
+            }
+        }
+
+        function buy_answer(){
+            if (!is_max_available_lvl){
+                document.getElementById('message').innerHTML="Ответ засчитан";
+            }
+            else if (available_coins < 5){
+                document.getElementById('message').innerHTML="Не хватает монет";
+            }
+            else {
+                document.getElementById('answer').value = '{{context.answer}}'; 
+                modifyControl()
+                spanCoins = document.getElementById('count_coin');
+                available_coins -= 5;
+                spanCoins.innerHTML = available_coins;
+                data_dict = {
+                    'answer_bought': true
+                }
+                fetch('/question', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data_dict)
+                });
+            }
+        }
 
 
-}
-</script>
+    </script>
 </body>
 </html>

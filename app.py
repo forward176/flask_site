@@ -72,7 +72,8 @@ def level():
         try:
             data = request.json
             if 'update_count_level' in data:
-                DB.update_count_level(session['login'])                            
+                DB.update_count_level(session['login'])       
+                DB.update_count_coins(session['login'], DB.get_count_coins(session['login']) + data['add_coins'])                     
                 return jsonify({'message': 'Success!'}), 200
             else:
                 raise KeyError('Value key not found')
@@ -106,6 +107,10 @@ def question():
             if 'update_count_level' in data:
                 DB.update_count_level(session['login'])                            
                 return jsonify({'message': 'Success!'}), 200
+            elif 'answer_bought' in data:
+                DB.update_count_coins(session['login'], DB.get_count_coins(session['login']) - 5)   
+                DB.update_count_level(session['login'])                            
+                return jsonify({'message': 'Success!'}), 200
             else:
                 raise KeyError('Value key not found')
         except (KeyError, json.JSONDecodeError) as e:
@@ -118,7 +123,6 @@ def question():
     requested_lvl = int(request.args.get('lvl'))    
     max_available_lvl = DB.get_count_level(session['login']) + 1
     if requested_lvl > max_available_lvl or requested_lvl > COUNT_GAME_LVLS or requested_lvl % 2 == 1:
-        print('!!!')
         return redirect(url_for('levels'), 301)   
     question_number = requested_lvl // 2 - 1 
     with open('questions.txt','r',encoding='UTF-8') as file:
@@ -127,5 +131,5 @@ def question():
     context['answer'] = lines[question_number * 2 + 1].strip()
     context['lvl'] = requested_lvl
     context["is_max_available_lvl"] = requested_lvl == max_available_lvl   
+    context['count_coin'] = DB.get_count_coins(session['login'])
     return render_template('question.html', context=context)
-

@@ -30,13 +30,18 @@
         0 -- ничего
         p - platform
     -->
-    <div class="modal" id='modal'>
+    
+        
+    
+
+
+
+    <div class="modal">       
         <div id="winWindow" class="window">
             <p>Вы победили!</p>
             <a href="\question?lvl={{context.lvl|int() + 1}}">
                 <button id="nextLevel">Закончить уровень</button>
             </a>
-
             <a href= "\level">
                 <button id="listLevel"> Список уровней</button>
             </a>        
@@ -48,11 +53,13 @@
                 <button id="nextLevel">Начать заново</button>
             </a>  
         </div>
+
     </div>
-
-
-
-
+    <script>
+        /*setInterval( function() {
+            document.querySelector('.modal').classList.toggle('blur');
+        }, 1000);*/
+    </script>
 
 
 
@@ -105,7 +112,7 @@
             
             content += "</tr>"; 
         } 
-
+        let coins = countCoin;
         console.log('countCoin: ', countCoin);
         gameTable.innerHTML += content;
         const hero = document.getElementById('hero');
@@ -135,7 +142,8 @@
             if(checkDoor && isGameOn){  //  уровень пройден
                 if ('{{context.is_max_available_lvl}}' == 'True'){
                     data_dict = {
-                        'update_count_level': true
+                        'update_count_level': true,
+                        'add_coins': coins
                     }
                     fetch('/level', {
                         method: 'POST',
@@ -153,7 +161,7 @@
                 document.querySelector('.modal').classList.toggle('blur');
                 /*document.body.style.filter = 'blur(4px)';
                 document.getElementById('winWindow').content.style.removeProperty('filter'); */
-        
+                
             }
 
 
@@ -170,7 +178,8 @@
                 isGameOn = false;
                 document.getElementById('loseWindow').style.visibility = 'visible';
                 speedX = 0;
-                speedY = 0;            
+                speedY = 0;      
+                document.querySelector('.modal').classList.toggle('blur');      
             }
             /// сбор монеток
             if(mat[posUpSide][posLeftSide] == 'c'){ 
